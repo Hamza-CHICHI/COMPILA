@@ -1,0 +1,14 @@
+il faut vérifier la partie ---- const , var ,  program ---- puis stocker ces variables dans une structure qui s'appelle
+TABLE_DES_SYMBOLES .
+		Typedef enum {TPROG, TCONST, TVAR} TSYM;
+		Typedef struct {
+			char NOM[20];
+ 			TSYM TIDF;
+		} T_TAB_IDF;
+		T_TAB_IDF TAB_IDFS[Nbr_des_identifiants];
+
+Contraintes : 
+	- Ne pas changer la valeur des constantes
+	- Ne pas utiliser le nom de program
+	- Déclarer les variables
+	- Pas de double declaration
