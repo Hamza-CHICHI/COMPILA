@@ -1,4 +1,3 @@
-
 #include "analyseur_lexical.h"
 
 int main(int argc, char const *argv[])
@@ -12,7 +11,8 @@ int main(int argc, char const *argv[])
     clearBuffer();
     while (getNextToken())
     {
-        printf(">> %s\n",buffer);
+        //printf(">> %s\n",buffer);
+        assignToken();
         clearBuffer();
     }
 
