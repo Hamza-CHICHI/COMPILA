@@ -1,0 +1,17 @@
+Lettre = "A" | "B" | "C" | "D" | "E" | "F" | "G" | "H" | "I" | "J" | "K" | "L" | "M" | "N" | "O" | "P" | "Q" | "R" | "S" | "T" | "U" | "V" | "W" | "X" | "Y" | "Z" | "a" | "b" | "c" | "d" | "e" | "f" | "g" | "h" | "i" | "j" | "k" | "l" | "m" | "n" | "o" | "p" | "q" | "r" | "s" | "t" | "u" | "v" | "w" | "x" | "y" | "z" ;
+Chiffre = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+Symbole = "[" | "]" | "{" | "}" | "(" | ")" | "<" | ">" | "'" | '"' | "=" | "|" | "." | "," | ";" | "_" ;
+CHAR = Lettre | Chiffre | Symbole ;
+CHAINE = '"',CHAR,{" ",CHAR},'"';
+NOMBRE = [ "-" ], Chiffre, { Chiffre } ;
+IDENTIFIANT = Lettre,{ Lettre | Chiffre | "_" | "." } ;
+AFFECTATION = IDENTIFIANT , "<-" , (  FACT | CHAINE  ) ;
+ADDOP = "+" | "-";
+MULOP = "*" | "/";
+PUISOP = "^" | "%%";
+FACT = IDENTIFIANT | NOMBRE|"(" , EXPR ,")";
+EXPR = TERM,{ ADDOP,TERM };
+TERM = PUISTERM,{ MULOP,PUISTERM };
+PUISTERM = FACT,{PUISOP,FACT};
+INST = "{",INSTS|AFFECTATION,"}";
+INSTS =  INST,{";",INST } ;

@@ -5,7 +5,21 @@
 
 int current_index = 0;
 //_______________________________________________________________________________________
+void analyseur_lexical(){
+    clearBuffer();
+    getNextChar();
+    while (getNextToken())
+    {
+        getNextToken();
+    }
+    /* display_id_tokens();
+    display_tokens();
+    display_name_id_tokens();
+    printf("Fin.\n"); */
+}
+//_______________________________________________________________________________________
 bool getNextToken(){
+    clearBuffer();
     do{
         if ( isNumber() ){
             readNumber();
@@ -19,15 +33,18 @@ bool getNextToken(){
         else if( isSeparator() ){
             readSeparator();
         }
+        else if (isNewLine()){
+            readNewLine();
+        }
         else if ( isEOF() ){
+            token = EOF_TOKEN;
             return false;
         }
         else{
             readUnknown();
         }
-        strcpy(current_symbol.word,buffer); 
     }while(taille_buffer ==0);
-
+    assignToken();
     return true; 
 }
 
@@ -65,10 +82,11 @@ void assignToken()
     int i;
     for (i = 0; i < TOKEN_LIST_SIZE; i++)
     {
-        if (strcmp(current_symbol.word, keywords[i]) == 0)
+        if (strcmp(buffer, keywords[i]) == 0)
         {
-            current_symbol.code = i;
-            printf("%s >\t %i : %s \n", tab_tokens[i],i, current_symbol.word);
+            current_symbol[current_index].code = i;
+            token = i;
+            strcpy(current_symbol[current_index].word,buffer);
             break;
         }
     }
@@ -78,14 +96,44 @@ void assignToken()
     {
         if (isBufferNumber())
         {
-            current_symbol.code = NUM_TOKEN;
-            printf("%s >\t %i : %s \n", tab_tokens[current_symbol.code], current_symbol.code, current_symbol.word);
+            current_symbol[current_index].code = NUM_TOKEN;
+            token = NUM_TOKEN;
+            strcpy(current_symbol[current_index].word, buffer);
         }
         else
         {
-            current_symbol.code = ID_TOKEN;
-            printf("%s >\t %i : %s \n", tab_tokens[current_symbol.code], current_symbol.code, current_symbol.word);
+            current_symbol[current_index].code = ID_TOKEN;
+            token = ID_TOKEN;
+            strcpy(current_symbol[current_index].word, buffer);
         }  
+    }
+    current_index++;
+}
+
+//_______________________________________________________________________________________
+void display_tokens(){
+    printf("\n____________LES TOKEN____________\n");
+    for (int i = 0; i < current_index; i++)
+    {
+        printf(">> %s\n",current_symbol[i].word);
+    }
+}
+
+//_______________________________________________________________________________________
+void display_id_tokens(){
+    printf("\n____________LES CODES____________\n");
+    for (int i = 0; i < current_index; i++)
+    {
+        printf(">> %d\n", current_symbol[i].code);
+    } 
+}
+
+//_______________________________________________________________________________________
+void display_name_id_tokens(){
+    printf("\n____________ID NAMES____________\n");
+    for (int i = 0; i < current_index; i++)
+    {
+        printf(">> %s\n", tab_tokens[current_symbol[i].code]);
     }
 }
 
@@ -100,7 +148,7 @@ bool isNumber(){
 
 //______________________________________________________________________________________
 bool isChar(){
-    if ( ('a' <= next_char && next_char <= 'z') || ('A' <= next_char && next_char <= 'Z') || ('1' <= next_char && next_char <= '9') )
+    if ( ('a' <= next_char && next_char <= 'z') || ('A' <= next_char && next_char <= 'Z') )
     {
         return true;
     }
@@ -126,6 +174,10 @@ bool isSpecial(){
     case '}': return true;
     case ':': return true;
     case '#': return true;
+    case '!': return true;
+    case '&': return true;
+    case '|': return true;
+    case ',': return true;
     default:
         return false;
     }
@@ -157,12 +209,19 @@ bool isSeparator(){
     switch (next_char)
     {
     case ' ': return true;
-    case '\n': return true;
     case '\r': return true;
     case '\t': return true;    
     default:
         return false;
     }
+}
+
+////______________________________________________________________________________________
+bool isNewLine(){
+    if (next_char == '\n'){
+        return true;
+    }
+    return false;
 }
 
 //______________________________________________________________________________________
@@ -189,6 +248,10 @@ void readWord(){
     {
         addCharToBuffer();
         getNextChar();
+        if ( next_char == '('){
+            clearBuffer();
+            strcpy(buffer,"vectorfunction");
+        }
     } while (isChar() || isNumber());
     
 }
@@ -217,6 +280,15 @@ void readSeparator(){
         getNextChar();
     } while (isSeparator());
     
+}
+
+//______________________________________________________________________________________
+void readNewLine(){
+    do
+    {
+        addCharToBuffer();
+        getNextChar();
+    } while (isSeparator());
 }
 
 //______________________________________________________________________________________

@@ -6,8 +6,9 @@
 #include <string.h>
 
 #define MAX_SIZE 10
-#define TOKEN_LIST_SIZE 33
-#define MAX_TOKEN 500
+#define TOKEN_LIST_SIZE 43
+#define MAX_FILE_TOKEN 1000
+#define ERRORS_NUMBER 2
 
 //ENUM DEFENITION
 typedef enum _bool
@@ -15,6 +16,16 @@ typedef enum _bool
     false,
     true
 } bool;
+
+typedef enum errors
+{
+    AFFECTATION_VIDE_ERROR,
+    CHAR_INCONNUE_ERROR
+} error_code;
+
+static char *tab_error[ERRORS_NUMBER] = {
+    "value was expected after <-",
+    "Caractere inconnue apres <-"};
 
 typedef enum
 {
@@ -28,6 +39,16 @@ typedef enum
     REPEAT_TOKEN,
     BREAK_TOKEN,
     IF_TOKEN,
+    TRUE_TOKEN,
+    FALSE_TOKEN,
+
+    //FUNCTIONS
+    EXPO_TOKEN,
+    LENGTH_TOKEN,
+    MIN_TOKEN,
+    MAX_TOKEN,
+    FACTORIAL_TOKEN,
+    VECTOR_TOKEN,
 
     //SYMBOLE TOKEN
     PLUS_TOKEN,
@@ -38,8 +59,10 @@ typedef enum
     VIRGULE_TOKEN,
     MODULO_TOKEN,
     PUISSANCE_TOKEN,
+
     AND_TOKEN,
     OR_TOKEN,
+
     INF_TOKEN,
     INFEG_TOKEN,
     SUP_TOKEN,
@@ -53,10 +76,12 @@ typedef enum
     ACCOLADE_OUVERTE_TOKEN,
     ACCOLADE_FERME_TOKEN,
     DEUX_PT_TOKEN,
+    DOUBLEGUILLEMET_TOKEN,
 
     //SPECIAL TOKEN
     COMMENTAIRE_TOKEN,
     ERR_TOKEN,
+    ENTER_TOKEN,
     EOF_TOKEN
 } tokens;
 
@@ -64,12 +89,23 @@ typedef enum
 static char tab_tokens[TOKEN_LIST_SIZE][50] = {
     "ID_TOKEN",
     "NUM_TOKEN",
+
     "FOR_TOKEN",
     "IN_TOKEN",
     "WHILE_TOKEN",
     "REPEAT_TOKEN",
     "BREAK_TOKEN",
     "IF_TOKEN",
+    "TRUE_TOKEN",
+    "FALSE_TOKEN",
+
+    "EXPO_TOKEN",
+    "LENGTH_TOKEN",
+    "MIN_TOKEN",
+    "MAX_TOKEN",
+    "FACTORIAL_TOKEN",
+    "VECTOR_TOKEN",
+
     "PLUS_TOKEN",
     "MOINS_TOKEN",
     "MULTIPLE_TOKEN",
@@ -78,8 +114,10 @@ static char tab_tokens[TOKEN_LIST_SIZE][50] = {
     "VIRGULE_TOKEN",
     "MODULO_TOKEN",
     "PUISSANCE_TOKEN",
+
     "AND_TOKEN",
     "OR_TOKEN",
+
     "INF_TOKEN",
     "INFEG_TOKEN",
     "SUP_TOKEN",
@@ -89,11 +127,15 @@ static char tab_tokens[TOKEN_LIST_SIZE][50] = {
     "PAR_OUVERTE_TOKEN",
     "PAR_FERME_TOKEN",
     "AFFECTATION_TOKEN",
+
     "ACCOLADE_OUVERTE_TOKEN",
     "ACCOLADE_FERME_TOKEN",
     "DEUX_PT_TOKEN",
+    "DOUBLEGUILLEMET_TOKEN",
+
     "COMMENTAIRE_TOKEN",
     "ERR_TOKEN",
+    "ENTER_TOKEN",
     "EOF_TOKEN"};
 
 static char keywords[TOKEN_LIST_SIZE][20] = {
@@ -106,6 +148,15 @@ static char keywords[TOKEN_LIST_SIZE][20] = {
     "repeat",
     "break",
     "if",
+    "TRUE",
+    "FALSE",
+
+    "exp",
+    "length",
+    "min",
+    "max",
+    "factorial",
+    "vectorfunction",
 
     "+",
     "-",
@@ -131,12 +182,12 @@ static char keywords[TOKEN_LIST_SIZE][20] = {
     "{",
     "}",
     ":",
+    "\"",
 
     "##",
     "ERR_TOKEN",
+    "\n",
     "EOF_TOKEN"};
-
-
 
 //declaration des structures_____________________________________________________________
 typedef struct symbol
@@ -150,7 +201,8 @@ char buffer[MAX_SIZE];
 char next_char;
 FILE *fichier ;
 int taille_buffer ;
+int token;
 
-struct symbol current_symbol;
+struct symbol current_symbol[MAX_FILE_TOKEN];
 
 #endif
