@@ -30,6 +30,7 @@ bool isSeparator();
 bool isNewLine();
 bool isEOF();
 bool isBufferNumber();
+bool isComment();
 
 void readNumber();
 void readWord();
@@ -38,5 +39,6 @@ void readOneByOne();
 void readSeparator();
 void readUnknown();
 void readNewLine();
+void readComment();
 
 #endif

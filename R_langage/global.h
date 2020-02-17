@@ -6,9 +6,8 @@
 #include <string.h>
 
 #define MAX_SIZE 10
-#define TOKEN_LIST_SIZE 43
+#define TOKEN_LIST_SIZE 100
 #define MAX_FILE_TOKEN 1000
-#define ERRORS_NUMBER 2
 
 //ENUM DEFENITION
 typedef enum _bool
@@ -17,15 +16,6 @@ typedef enum _bool
     true
 } bool;
 
-typedef enum errors
-{
-    AFFECTATION_VIDE_ERROR,
-    CHAR_INCONNUE_ERROR
-} error_code;
-
-static char *tab_error[ERRORS_NUMBER] = {
-    "value was expected after <-",
-    "Caractere inconnue apres <-"};
 
 typedef enum
 {
@@ -39,8 +29,10 @@ typedef enum
     REPEAT_TOKEN,
     BREAK_TOKEN,
     IF_TOKEN,
+    ELSE_TOKEN,
     TRUE_TOKEN,
     FALSE_TOKEN,
+    RETURN_TOKEN,
 
     //FUNCTIONS
     EXPO_TOKEN,
@@ -48,7 +40,7 @@ typedef enum
     MIN_TOKEN,
     MAX_TOKEN,
     FACTORIAL_TOKEN,
-    VECTOR_TOKEN,
+    FUNCTION_TOKEN,
 
     //SYMBOLE TOKEN
     PLUS_TOKEN,
@@ -68,10 +60,11 @@ typedef enum
     SUP_TOKEN,
     SUPEG_TOKEN,
     DIFF_TOKEN,
-    NEGATION_TOKEN,
+    EQUAL_CONDITION_TOKEN,
     PAR_OUVERTE_TOKEN,
     PAR_FERME_TOKEN,
     AFFECTATION_TOKEN,
+    NEGATION_TOKEN,
 
     ACCOLADE_OUVERTE_TOKEN,
     ACCOLADE_FERME_TOKEN,
@@ -96,15 +89,17 @@ static char tab_tokens[TOKEN_LIST_SIZE][50] = {
     "REPEAT_TOKEN",
     "BREAK_TOKEN",
     "IF_TOKEN",
+    "ELSE_TOKEN",
     "TRUE_TOKEN",
     "FALSE_TOKEN",
+    "RETURN_TOKEN",
 
     "EXPO_TOKEN",
     "LENGTH_TOKEN",
     "MIN_TOKEN",
     "MAX_TOKEN",
     "FACTORIAL_TOKEN",
-    "VECTOR_TOKEN",
+    "FUNCTION_TOKEN",
 
     "PLUS_TOKEN",
     "MOINS_TOKEN",
@@ -123,10 +118,11 @@ static char tab_tokens[TOKEN_LIST_SIZE][50] = {
     "SUP_TOKEN",
     "SUPEG_TOKEN",
     "DIFF_TOKEN",
-    "NEGATION_TOKEN",
+    "EQUAL_CONDITION_TOKEN",
     "PAR_OUVERTE_TOKEN",
     "PAR_FERME_TOKEN",
     "AFFECTATION_TOKEN",
+    "NEGATION_TOKEN",
 
     "ACCOLADE_OUVERTE_TOKEN",
     "ACCOLADE_FERME_TOKEN",
@@ -148,15 +144,17 @@ static char keywords[TOKEN_LIST_SIZE][20] = {
     "repeat",
     "break",
     "if",
+    "else",
     "TRUE",
     "FALSE",
+    "return",
 
     "exp",
     "length",
     "min",
     "max",
     "factorial",
-    "vectorfunction",
+    "function",
 
     "+",
     "-",
@@ -175,10 +173,12 @@ static char keywords[TOKEN_LIST_SIZE][20] = {
     ">",
     ">=",
     "!=",
-    "!",
+    "==",
     "(",
     ")",
     "<-",
+    "!",
+
     "{",
     "}",
     ":",

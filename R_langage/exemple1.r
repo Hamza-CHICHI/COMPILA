@@ -19,3 +19,16 @@ else{
         }
     }
 }   
+
+
+test <- function(){
+    if (a < 4)
+    {
+        a <- 5 
+    }
+    else {
+        for ( a in 1:4){
+            a <- 4
+        }
+    }
+}

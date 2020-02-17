@@ -8,14 +8,15 @@ int current_index = 0;
 void analyseur_lexical(){
     clearBuffer();
     getNextChar();
-    while (getNextToken())
+    int _bool = getNextToken();
+    while (_bool)
     {
-        getNextToken();
+        _bool = getNextToken();
     }
-    /* display_id_tokens();
-    display_tokens();
+    //display_id_tokens();
+    //display_tokens();
     display_name_id_tokens();
-    printf("Fin.\n"); */
+    //printf("Fin.\n");
 }
 //_______________________________________________________________________________________
 bool getNextToken(){
@@ -36,8 +37,11 @@ bool getNextToken(){
         else if (isNewLine()){
             readNewLine();
         }
+        else if (isComment()){
+            readComment();
+        }
         else if ( isEOF() ){
-            token = EOF_TOKEN;
+            current_symbol[current_index++].code = EOF_TOKEN;
             return false;
         }
         else{
@@ -98,6 +102,11 @@ void assignToken()
         {
             current_symbol[current_index].code = NUM_TOKEN;
             token = NUM_TOKEN;
+            strcpy(current_symbol[current_index].word, buffer);
+        }
+        else if (buffer[0] == '\n'){
+            current_symbol[current_index].code = ENTER_TOKEN;
+            token = ENTER_TOKEN;
             strcpy(current_symbol[current_index].word, buffer);
         }
         else
@@ -173,11 +182,11 @@ bool isSpecial(){
     case '{': return true;
     case '}': return true;
     case ':': return true;
-    case '#': return true;
     case '!': return true;
     case '&': return true;
     case '|': return true;
     case ',': return true;
+    case '\"': return true;
     default:
         return false;
     }
@@ -233,6 +242,14 @@ bool isEOF(){
 }
 
 //______________________________________________________________________________________
+bool isComment(){
+    if (next_char == '#'){
+        return true;
+    }
+    return false;
+}
+
+//______________________________________________________________________________________
 void readNumber(){
     do
     {
@@ -248,10 +265,6 @@ void readWord(){
     {
         addCharToBuffer();
         getNextChar();
-        if ( next_char == '('){
-            clearBuffer();
-            strcpy(buffer,"vectorfunction");
-        }
     } while (isChar() || isNumber());
     
 }
@@ -289,6 +302,13 @@ void readNewLine(){
         addCharToBuffer();
         getNextChar();
     } while (isSeparator());
+}
+
+void readComment(){
+    do
+    {
+        getNextChar();
+    } while (!isNewLine());
 }
 
 //______________________________________________________________________________________
